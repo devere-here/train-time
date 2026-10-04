@@ -1,5 +1,8 @@
-// Get your free API key at https://api.mta.info/
-export const MTA_API_KEY = '';
+// API key lives in secrets.ts (gitignored). See secrets.example.ts.
+export { MTA_API_KEY } from './secrets';
+
+// Bus Time SIRI API — real-time arrivals for all MTA buses
+export const BUS_TIME_BASE = 'https://bustime.mta.info/api/siri/stop-monitoring.json';
 
 const BASE = 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2F';
 

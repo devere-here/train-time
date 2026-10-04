@@ -1,3 +1,6 @@
+# Secrets — never commit
+src/api/secrets.ts
+
 # OSX
 #
 .DS_Store

@@ -6,3 +6,14 @@ export interface TrainArrival {
   arrivalTime: Date | null;
   departureTime: Date | null;
 }
+
+export interface BusArrival {
+  vehicleRef: string;
+  routeId: string;
+  stopId: string;
+  destinationName: string;
+  arrivalTime: Date | null;
+  scheduledArrivalTime: Date | null;
+}
+
+export type Arrival = { arrivalTime: Date | null };

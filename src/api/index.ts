@@ -1,2 +1,3 @@
 export { getArrivalsForStop } from './subwayApi';
-export type { TrainArrival } from './types';
+export { getBusArrivalsForStop } from './busApi';
+export type { TrainArrival, BusArrival, Arrival } from './types';
