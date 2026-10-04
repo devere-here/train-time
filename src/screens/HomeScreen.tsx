@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,6 +12,8 @@ import { useArrivals } from '../hooks/useArrivals';
 import { getArrivalsForStop, getBusArrivalsForStop } from '../api';
 import type { Arrival } from '../api';
 import { STOPS, BUS_STOPS } from '../constants/stations';
+
+type ViewMode = 'subway' | 'bus';
 
 function minutesUntil(date: Date): number {
   return Math.round((date.getTime() - Date.now()) / 60_000);
@@ -22,6 +25,30 @@ function formatArrival(a: Arrival): string {
   if (mins <= 0) return 'Due';
   if (mins === 1) return '1 min';
   return `${mins} mins`;
+}
+
+interface ToggleProps {
+  value: ViewMode;
+  onChange: (v: ViewMode) => void;
+}
+
+function Toggle({ value, onChange }: ToggleProps) {
+  return (
+    <View style={styles.toggle}>
+      {(['subway', 'bus'] as ViewMode[]).map(mode => (
+        <TouchableOpacity
+          key={mode}
+          style={[styles.toggleOption, value === mode && styles.toggleOptionActive]}
+          onPress={() => onChange(mode)}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.toggleLabel, value === mode && styles.toggleLabelActive]}>
+            {mode === 'subway' ? '🚇 Subway' : '🚌 Bus'}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
 }
 
 interface ArrivalCardProps {
@@ -79,41 +106,64 @@ function ArrivalCard({
 }
 
 export function HomeScreen() {
+  const [view, setView] = useState<ViewMode>('subway');
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.pageTitle}>Train Times</Text>
+        <Text style={styles.pageTitle}>{view === 'subway' ? 'Train Times' : 'Bus Times'}</Text>
+        <Toggle value={view} onChange={setView} />
 
-        <Text style={styles.sectionLabel}>SUBWAY</Text>
-
-        <ArrivalCard
-          line="R"
-          lineColor="#FCCC0A"
-          stationName="Bay Ridge Av"
-          destination="Manhattan"
-          fetcher={() => getArrivalsForStop(STOPS.BAY_RIDGE_AVE_NB, 'R')}
-        />
-
-        <ArrivalCard
-          line="N"
-          lineColor="#FCCC0A"
-          stationName="8 Av"
-          destination="Manhattan"
-          fetcher={() => getArrivalsForStop(STOPS.EIGHTH_AVE_NB, 'N')}
-        />
-
-        <Text style={styles.sectionLabel}>BUS</Text>
-
-        <ArrivalCard
-          line="B63"
-          lineColor="#0039A6"
-          textColor="#FFF"
-          stationName="5 Av / Bay Ridge Av"
-          destination="Manhattan"
-          fetcher={() =>
-            getBusArrivalsForStop(BUS_STOPS.BAY_RIDGE_AVE_B63_NB, 'B63')
-          }
-        />
+        {view === 'subway' ? (
+          <>
+            <ArrivalCard
+              key="subway-r"
+              line="R"
+              lineColor="#FCCC0A"
+              stationName="Bay Ridge Av"
+              destination="Manhattan"
+              fetcher={() => getArrivalsForStop(STOPS.BAY_RIDGE_AVE_NB, 'R')}
+            />
+            <ArrivalCard
+              key="subway-n"
+              line="N"
+              lineColor="#FCCC0A"
+              stationName="8 Av"
+              destination="Manhattan"
+              fetcher={() => getArrivalsForStop(STOPS.EIGHTH_AVE_NB, 'N')}
+            />
+          </>
+        ) : (
+          <>
+            <ArrivalCard
+              key="bus-b64"
+              line="B64"
+              lineColor="#0039A6"
+              textColor="#FFF"
+              stationName="Ovington Av / 6 Av"
+              destination="Shore Road"
+              fetcher={() => getBusArrivalsForStop(BUS_STOPS.OVINGTON_B64_SHORE, 'B64')}
+            />
+            <ArrivalCard
+              key="bus-x27"
+              line="X27"
+              lineColor="#0039A6"
+              textColor="#FFF"
+              stationName="3 Av / Senator St"
+              destination="Midtown Manhattan"
+              fetcher={() => getBusArrivalsForStop(BUS_STOPS.SENATOR_ST_EXPRESS_NB, 'X27')}
+            />
+            <ArrivalCard
+              key="bus-x37"
+              line="X37"
+              lineColor="#0039A6"
+              textColor="#FFF"
+              stationName="3 Av / Senator St"
+              destination="Midtown Manhattan"
+              fetcher={() => getBusArrivalsForStop(BUS_STOPS.SENATOR_ST_EXPRESS_NB, 'X37')}
+            />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -131,15 +181,37 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#1C1C1E',
-    marginBottom: 20,
+    marginBottom: 16,
   },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '600',
+  toggle: {
+    flexDirection: 'row',
+    backgroundColor: '#E5E5EA',
+    borderRadius: 12,
+    padding: 3,
+    marginBottom: 24,
+  },
+  toggleOption: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  toggleOptionActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  toggleLabel: {
+    fontSize: 15,
+    fontWeight: '500',
     color: '#8E8E93',
-    letterSpacing: 1,
-    marginBottom: 8,
-    marginLeft: 4,
+  },
+  toggleLabelActive: {
+    color: '#1C1C1E',
+    fontWeight: '600',
   },
   card: {
     backgroundColor: '#FFFFFF',

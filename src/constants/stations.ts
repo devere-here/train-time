@@ -11,6 +11,6 @@ export const STOPS = {
 //   3. Use the stops-for-route API with your MTA key:
 //      GET https://bustime.mta.info/api/where/stops-for-route/MTA%20NYCT_B63.json?key=YOUR_KEY&version=2
 export const BUS_STOPS = {
-  // TODO: replace with real stop IDs from the MTA Bus Time website
-  BAY_RIDGE_AVE_B63_NB: '305348',  // B63 5 Av/Bay Ridge Av → Downtown Brooklyn
+  OVINGTON_B64_SHORE:   '300060',  // B64 Ovington Av/6 Av → Bay Ridge Shore Rd
+  SENATOR_ST_EXPRESS_NB: '307078', // X27/X37 3 Av/Senator St → Midtown Manhattan
 } as const;
