@@ -3,6 +3,13 @@
 export const STOPS = {
   BAY_RIDGE_AVE_NB: 'R42N',  // R train → Manhattan
   EIGHTH_AVE_NB: 'N02N',     // N train → Manhattan
+  THIRTY_SIXTH_ST_NB: 'R36N', // D/N/R trains → Manhattan
+} as const;
+
+// Station complexes with a separate stop ID per platform.
+export const STATIONS = {
+  // 2/3/4/5, B/Q and D/N/R trains → Manhattan
+  ATLANTIC_BARCLAYS_NB: ['235N', 'D24N', 'R31N'],
 } as const;
 
 // Bus stop IDs from MTA Bus Time. Find yours:
